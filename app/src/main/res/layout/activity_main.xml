@@ -3,104 +3,132 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_gradient"
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerView"
-        />
+        android:paddingHorizontal="10dp" />
 
     <ProgressBar
-        android:layout_centerInParent="true"
         android:id="@+id/loadingIcon"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_centerInParent="true" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:id="@+id/bottomPlayerIndicator"
-        android:layout_alignParentBottom="true"
-        android:padding="10dp"
-        android:background="@color/white"
-        android:visibility="invisible"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/currentPlayingTitle"
-            android:text="Track Name"
-            android:layout_centerHorizontal="true"
-            android:textSize="16sp"
-            android:maxLines="2"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/currentPlayingTitle"
-            android:layout_marginTop="10dp"
+            android:layout_height="140dp"
+            android:id="@+id/bottomPlayerIndicator"
+            android:layout_alignParentBottom="true"
+            android:padding="10dp"
+            android:background="@color/white"
+            android:visibility="invisible"
+            android:clickable="true"
+            android:focusable="true"
             >
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/fast_forward"
-            android:contentDescription="nextButton"
-            android:background="@drawable/button_background_right_side_cornerd"
-            android:id="@+id/nextButton"
-            android:layout_toEndOf="@+id/playButton"
-            android:layout_centerVertical="true"
-            />
-
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/playButton"
-            android:src="@drawable/baseline_play_arrow_24"
-            android:contentDescription="playButton"
-            android:background="@drawable/button_background_both_side_cornerd"
-            android:layout_centerInParent="true"
-            android:layout_marginHorizontal="10dp"
-            />
-
-
-        <ImageButton
-            android:id="@+id/previousButton"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_toStartOf="@id/playButton"
-            android:background="@drawable/button_background_left_side_cornerd"
-            android:contentDescription="previousButton"
-            android:src="@mipmap/fast_backward"
-            android:layout_centerVertical="true"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-            <Chronometer
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/startTime"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="04:00"
-                android:id="@+id/endTime"
-                android:layout_alignParentEnd="true"/>
+                android:id="@+id/currentPlayingTitle"
+                android:text="Track Name"
+                android:textColor="@color/black"
+                android:layout_centerHorizontal="true"
+                android:textSize="16sp"
+                android:maxLines="2"
+                android:fontFamily="@font/poppins_bold"/>
 
-            <ProgressBar
-                android:id="@+id/progressBar2"
-                style="?android:attr/progressBarStyleHorizontal"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/startTime"/>
+                android:layout_below="@id/currentPlayingTitle"
+                android:layout_marginTop="10dp"
+                >
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/fast_forward"
+                    android:contentDescription="nextButton"
+                    android:background="@drawable/button_background_right_side_cornerd"
+                    android:id="@+id/nextButton"
+                    android:layout_toEndOf="@+id/playButton"
+                    android:layout_centerVertical="true"
+                    />
+
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/playButton"
+                    android:src="@drawable/baseline_play_arrow_24"
+                    android:contentDescription="playButton"
+                    android:background="@drawable/button_background_both_side_cornerd"
+                    android:layout_centerInParent="true"
+                    android:layout_marginHorizontal="10dp"
+                    />
+
+
+                <ImageButton
+                    android:id="@+id/previousButton"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:layout_toStartOf="@id/playButton"
+                    android:background="@drawable/button_background_left_side_cornerd"
+                    android:contentDescription="previousButton"
+                    android:src="@mipmap/fast_backward"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:fontFamily="@font/poppins"
+                    android:id="@+id/startTime"/>
+
+                <TextView
+                    android:id="@+id/remainingTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins"
+                    android:text="-04:00"
+
+                    android:visibility="invisible" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="04:00"
+                    android:fontFamily="@font/poppins"
+                    android:id="@+id/endTime"
+                    android:layout_alignParentEnd="true"/>
+
+
+                <SeekBar
+                    android:id="@+id/progressBar2"
+                    android:layout_marginHorizontal="9dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/startTime"/>
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:background="@drawable/tool_tip_progress"
+                    android:paddingLeft="5dp"
+                    android:visibility="gone"
+                    android:id="@+id/toolTip"
+                    android:text="00:00" />
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
+
 
 
 </RelativeLayout>

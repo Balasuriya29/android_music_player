@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
@@ -17,7 +16,6 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +35,7 @@ public class MainActivity extends AppCompatActivity{
     private PlayerService localService;
     private boolean isBound = false;
     private RelativeLayout bottomPlayerInd;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +44,11 @@ public class MainActivity extends AppCompatActivity{
         bottomPlayerInd = findViewById(R.id.bottomPlayerIndicator);
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED)
         {
             System.out.println("Permission Requesting");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.POST_NOTIFICATIONS}, 101);
         }
     }
 
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity{
         if (requestCode == 101) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 System.out.println("Fetching Audios");
-                startService();
+                settingUpService();
             }
             else {
                 Toast.makeText(MainActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT) .show();
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
-    public void startService() {
+    public void settingUpService() {
         Intent intent = new Intent(this, PlayerService.class);
         bindService(intent, new ServiceConnection() {
             @Override
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity{
                 isBound = false;
             }
         }, Context.BIND_AUTO_CREATE);
-
     }
 
     private void getAllAudioFromStorage() {
@@ -149,7 +147,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @NonNull
-    private static String getTimeFromMS(int duration) {
+    private String getTimeFromMS(int duration) {
         StringBuilder time = new StringBuilder();
 
         long minutes = (duration / 1000)  / 60;
@@ -169,7 +167,6 @@ public class MainActivity extends AppCompatActivity{
     private void setTheAudioInListView() {
         if(isBound) {
             RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(new AudioListAdapter(this, audioList, localService, bottomPlayerInd, recyclerView));
             findViewById(R.id.loadingIcon).setVisibility(View.GONE);

@@ -1,63 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="80dp"
     android:id="@+id/item_parent"
-    app:contentPadding="10dp"
-    app:cardCornerRadius="20dp"
-    android:layout_marginVertical="10dp"
-    android:layout_marginHorizontal="10dp">
+    android:layout_marginVertical="15dp"
+    android:layout_marginHorizontal="10dp"
+    >
 
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageUrl"
+        android:layout_marginEnd="15dp"
+        android:contentDescription="Audio Image"
+        android:src="@drawable/default_thumbnail"
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
+        />
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:id="@+id/imageUrl"
-            android:layout_marginEnd="15dp"
-            android:contentDescription="Audio Image"
-            android:src="@drawable/default_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/imageUrl"
+        android:layout_centerVertical="true"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/audioTitle"
+            android:text="Title"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="#8ba2b9"
+            android:layout_marginBottom="10dp"
+            android:textSize="18sp"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:layout_marginEnd="55dp"
             />
-        <RelativeLayout
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/imageUrl"
-            android:layout_centerVertical="true"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/audioTitle"
-                android:text="Title"
-                android:layout_marginBottom="10dp"
-                android:textSize="18sp"
-                android:maxLines="1"
-                android:textStyle="bold"
-                android:layout_marginEnd="55dp"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/audioDuration"
-                android:text="Duration"
-                android:textSize="12sp"
-                android:maxLines="1"
-                android:layout_below="@+id/audioTitle"/>
-        </RelativeLayout>
-
-        <ImageView
-            android:contentDescription="PlayAndPauseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_play_circle_24"
-            android:id="@+id/playOrPause"
-            android:padding="10dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
-
+            android:id="@+id/audioDuration"
+            android:text="Duration"
+            android:fontFamily="@font/poppins"
+            android:textColor="#8ba2b9"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:layout_below="@+id/audioTitle"/>
     </RelativeLayout>
 
-</androidx.cardview.widget.CardView>
+    <ImageButton
+        android:contentDescription="PlayAndPauseButton"
+        android:layout_width="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background_both_side_cornerd_white"
+        android:src="@drawable/baseline_play_arrow_24"
+        android:id="@+id/playOrPause"
+        android:padding="5dp"
+        android:elevation="8dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"/>
+
+
+</RelativeLayout>

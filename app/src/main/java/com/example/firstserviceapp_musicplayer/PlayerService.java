@@ -7,13 +7,14 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 
 
 public class PlayerService extends Service {
     private MediaPlayer player;
     private final IBinder binder = new LocalBinder();
-
     private boolean isPlaying=false;
 
     public class LocalBinder extends Binder {
@@ -26,6 +27,7 @@ public class PlayerService extends Service {
         player = MediaPlayer.create(this, uri);
         isPlaying = true;
         player.setLooping(true);
+
         player.start();
     }
 
@@ -34,15 +36,16 @@ public class PlayerService extends Service {
         player.start();
     }
 
-    public int getDuration() {
-        return player.getCurrentPosition();
-    }
-
     public void pausePlayer(){
         if(isPlaying) {
             player.pause();
             isPlaying = false;
         }
+    }
+
+    public void seekAndPlayPlayer(long remainingMS) {
+        player.seekTo((int) remainingMS, MediaPlayer.SEEK_CLOSEST_SYNC);
+        startPlayer();
     }
 
     public void stopPlayer(){
@@ -54,6 +57,23 @@ public class PlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+//        Intent notificationIntent = new Intent(this, MainActivity.class);
+//        PendingIntent pendingIntent =
+//                PendingIntent.getActivity(this, 0, notificationIntent,
+//                        PendingIntent.FLAG_IMMUTABLE);
+//
+//        Notification notification =
+//                new Notification.Builder(this, CHANNEL_DEFAULT_IMPORTANCE)
+//                        .setContentTitle(getText(R.string.notification_title))
+//                        .setContentText(getText(R.string.notification_message))
+//                        .setSmallIcon(R.drawable.icon)
+//                        .setContentIntent(pendingIntent)
+//                        .setTicker(getText(R.string.ticker_text))
+//                        .build();
+//
+//        startForeground(1, notification);
+
         return START_STICKY;
     }
 

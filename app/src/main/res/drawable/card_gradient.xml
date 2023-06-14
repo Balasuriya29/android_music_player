@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/card" />
+            <corners android:radius="15dp"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <corners android:radius="15dp"/>
+            <gradient android:startColor="@color/lWhite" android:endColor="@color/lWhite"/>
+        </shape>
+    </item>
+
+</layer-list>
