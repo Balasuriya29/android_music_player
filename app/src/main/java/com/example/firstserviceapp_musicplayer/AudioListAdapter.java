@@ -3,6 +3,7 @@ package com.example.firstserviceapp_musicplayer;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,10 @@ import java.util.Objects;
 
 
 public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.AudioViewHolder> {
+
     private static ArrayList<AudioData> audios;
     private static PlayerService localService;
-    private final Context context;
+    private Context context;
     private static int playingStatus = 0;
     private static int currentPlayingIndex = 0;
     private static AudioViewHolder currentPlaying;
@@ -42,6 +44,39 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
         AudioListAdapter.localService = service;
         bottomPlayerIndicator = BottomPlayerIndicator.getInstance(layout, context);
         AudioListAdapter.myRef = recyclerView;
+    }
+
+    @NonNull
+    @Override
+    public AudioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_item_template, parent, false);
+        return new AudioViewHolder(view);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull AudioViewHolder holder, int position) {
+        holder.titleText.setText(audios.get(holder.getAdapterPosition()).getName());
+        holder.durationText.setText(audios.get(holder.getAdapterPosition()).getArtist());
+
+        if(audios.get(holder.getAdapterPosition()).getImageUrl() != null)
+            Glide.with(context).asBitmap().load(audios.get(holder.getAdapterPosition()).getImageUrl()).into(holder.imageUrl);
+        else
+            Glide.with(context).asDrawable().load(R.drawable.default_thumbnail).into(holder.imageUrl);
+    }
+
+    @Override
+    public int getItemCount() {
+        return audios.size();
     }
 
     private static void createAndStartThread(long duration){
@@ -77,41 +112,10 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
         if(count != null) count.cancel();
     }
 
-    @NonNull
-    @Override
-    public AudioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_item_template, parent, false);
-        return new AudioViewHolder(view);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull AudioViewHolder holder, int position) {
-        holder.titleText.setText(audios.get(holder.getAdapterPosition()).getName());
-        holder.durationText.setText(audios.get(holder.getAdapterPosition()).getDuration());
-
-        if(audios.get(holder.getAdapterPosition()).getImageUrl() != null)
-            Glide.with(context).asBitmap().load(audios.get(holder.getAdapterPosition()).getImageUrl()).into(holder.imageUrl);
-        else
-            Glide.with(context).asDrawable().load(R.drawable.default_thumbnail).into(holder.imageUrl);
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return audios.size();
-    }
-
     private void setBottomBar(AudioData audioData) {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.bottomMargin = dpTopx(140);
+        myRef.setLayoutParams(params);
         bottomPlayerIndicator.parent.setVisibility(View.VISIBLE);
         bottomPlayerIndicator.title.setText(audioData.getName());
         bottomPlayerIndicator.end.setText(audioData.getDuration());
@@ -120,6 +124,18 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
             Glide.with(context).asDrawable().load(R.drawable.baseline_pause_24).into(bottomPlayerIndicator.play);
         else
             Glide.with(context).asDrawable().load(R.drawable.baseline_play_arrow_24).into(bottomPlayerIndicator.play);
+    }
+
+    private int dpTopx(int dp){
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                context.getResources().getDisplayMetrics()
+        );
+    }
+
+    public static BottomPlayerIndicator getBottomPlayerIndicator() {
+        return bottomPlayerIndicator;
     }
 
     public class AudioViewHolder extends RecyclerView.ViewHolder {
@@ -145,7 +161,7 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
                     bottomPlayerIndicator.progress.setMax((int) totalDuration);
                     createAndStartThread(totalDuration);
                     currentPlayingIndex = getAdapterPosition();
-                    localService.createAndStartPlayer(audios.get(getAdapterPosition()).getUri());
+                    localService.createAndStartPlayer(audios.get(getAdapterPosition()));
                     Glide.with(context).asDrawable().load(R.drawable.baseline_pause_24).into(this.playPauseButton);
                     playingStatus = 2;
                     currentPlaying = this;
@@ -167,7 +183,7 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
                         createAndStartThread(totalDuration);
 
                         localService.stopPlayer();
-                        localService.createAndStartPlayer(audios.get(getAdapterPosition()).getUri());
+                        localService.createAndStartPlayer(audios.get(getAdapterPosition()));
 
                         currentPlayingIndex = getAdapterPosition();
                         currentPlaying = this;
@@ -192,12 +208,24 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
         }
     }
 
-    private static class BottomPlayerIndicator{
+    public static class BottomPlayerIndicator{
         private static BottomPlayerIndicator indicator = null;
         private final RelativeLayout parent;
         private final TextView title, end, start, remaining, toolTip;
         private final ImageButton play, next, prev;
         private final SeekBar progress;
+
+        public ImageButton getPlay() {
+            return play;
+        }
+
+        public ImageButton getNext() {
+            return next;
+        }
+
+        public ImageButton getPrev() {
+            return prev;
+        }
 
         private BottomPlayerIndicator(RelativeLayout layout, Context context){
             parent = layout;
@@ -258,7 +286,7 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
                     nextHolder.durationText.setTextColor(-1);
 
                     localService.stopPlayer();
-                    localService.createAndStartPlayer(audios.get(currentPlayingIndex + 1).getUri());
+                    localService.createAndStartPlayer(audios.get(currentPlayingIndex + 1));
                     currentPlayingIndex += 1;
                     currentPlaying = nextHolder;
                     playingStatus = 2;
@@ -288,7 +316,7 @@ public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.Audi
                     prevHolder.durationText.setTextColor(-1);
 
                     localService.stopPlayer();
-                    localService.createAndStartPlayer(audios.get(currentPlayingIndex-1).getUri());
+                    localService.createAndStartPlayer(audios.get(currentPlayingIndex-1));
                     currentPlayingIndex -=1;
                     currentPlaying = prevHolder;
                     playingStatus = 2;

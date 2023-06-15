@@ -20,7 +20,7 @@
         android:layout_centerInParent="true" />
 
 
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="140dp"
             android:id="@+id/bottomPlayerIndicator"
@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/currentPlayingTitle"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 >
                 <ImageButton
                     android:layout_width="50dp"

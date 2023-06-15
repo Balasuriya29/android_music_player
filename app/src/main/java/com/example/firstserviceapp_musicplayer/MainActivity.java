@@ -42,11 +42,11 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         bottomPlayerInd = findViewById(R.id.bottomPlayerIndicator);
-
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED)
-        {
+        if(
+            ContextCompat.checkSelfPermission(this, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
             System.out.println("Permission Requesting");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.POST_NOTIFICATIONS}, 101);
         }
@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity{
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.SIZE
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.ARTIST,
         };
 
         String selection = MediaStore.Audio.Media.DURATION +
@@ -123,12 +124,17 @@ public class MainActivity extends AppCompatActivity{
             int durationColumn =
                     cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
             int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE);
+            int artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST);
+
 
             while (cursor.moveToNext()){
                 long id = cursor.getLong(idColumn);
                 String name = cursor.getString(nameColumn);
                 int duration = cursor.getInt(durationColumn);
                 int size = cursor.getInt(sizeColumn);
+                String artist = cursor.getString(artistColumn);
+
+
                 Uri contentUri = ContentUris.withAppendedId(
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
                 Bitmap thumbnail = null;
@@ -141,7 +147,7 @@ public class MainActivity extends AppCompatActivity{
                         System.out.println("***Error***"+e.getMessage());
                     }
                 }
-                audioList.add(new AudioData(contentUri, name, getTimeFromMS(duration), size, thumbnail, duration));
+                audioList.add(new AudioData(contentUri, name, getTimeFromMS(duration), size, thumbnail, duration, artist));
             }
         }
     }
